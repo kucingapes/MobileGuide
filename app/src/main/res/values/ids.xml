@@ -19,4 +19,13 @@
     <item name="lokasi_title" type="id"/>
     <item name="route_btn" type="id"/>
     <item name="maps_view" type="id"/>
+    <item name="item_image" type="id"/>
+    <item name="route_list" type="id"/>
+    <item name="artTransport" type="id"/>
+    <item name="artLine" type="id"/>
+    <item name="artEnd" type="id"/>
+    <item name="startStop" type="id"/>
+    <item name="route_transport" type="id"/>
+    <item name="route_distance" type="id"/>
+    <item name="route_duration" type="id"/>
 </resources>

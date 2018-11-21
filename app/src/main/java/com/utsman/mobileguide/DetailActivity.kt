@@ -23,14 +23,20 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
-import com.utsman.mobileguide.model.MyDocument
+import com.utsman.mobileguide.adapter.AdapterImages
+import com.utsman.mobileguide.helper.SingleIdHelper
+import com.utsman.mobileguide.iView.iSingleView
+import com.utsman.mobileguide.model.firestore.Document
+import com.utsman.mobileguide.presenter.SinglePresenter
 import com.utsman.mobileguide.ui.DetailUi
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.lang.Exception
 import java.util.*
 
-class DetailActivity : BaseMapActivity() {
+class DetailActivity : BaseMapActivity(), iSingleView {
 
     private val DEFAULT_DOUBLE: Double = 0.0
 
@@ -41,7 +47,7 @@ class DetailActivity : BaseMapActivity() {
     private lateinit var addressText: TextView
     private lateinit var textDescription: TextView
     private lateinit var images: RecyclerView
-    private lateinit var lokasiTitle: TextView
+    private lateinit var titleLocation: TextView
     private lateinit var btnRoute: CardView
 
     private lateinit var ratingView: LinearLayout
@@ -50,42 +56,28 @@ class DetailActivity : BaseMapActivity() {
 
     private lateinit var googleMap: GoogleMap
 
-    private var id: String? = null
-
     private var objLat: Double? = DEFAULT_DOUBLE
     private var objLng: Double? = DEFAULT_DOUBLE
 
-    private var db: FirebaseFirestore? = null
+    private lateinit var singlePresenter: SinglePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DetailUi().setContentView(this)
         initId()
 
-        id = intent.getStringExtra("id_document")
-        db = FirebaseFirestore.getInstance()
+        val id = intent.getStringExtra("id_document")
+        val db = FirebaseFirestore.getInstance()
 
         initToolbar()
+        singlePresenter = SinglePresenter(this, SingleIdHelper(db))
+        singlePresenter.requestData(id)
 
-        prepareDb()
         mapsView.onCreate(savedInstanceState)
     }
 
-    private fun prepareDb() {
-        id?.let {
-            db?.collection("lokasi")?.document(it)?.get()
-                ?.addOnSuccessListener { task ->
-                    val document = task.toObject(MyDocument::class.java)
-                    document?.let { it ->
-                        setupDb(it)
-                    }
-                }
-        }
-    }
-
     @SuppressLint("SetTextI18n")
-    private fun setupDb(document: MyDocument) {
-
+    override fun onPrepareById(document: Document) {
         objLat = document.location.latitude
         objLng = document.location.longitude
 
@@ -102,16 +94,33 @@ class DetailActivity : BaseMapActivity() {
         titleText.text = document.name
         textDescription.text = document.desc
         addressText.text = "$address$city"
+        titleLocation.text = intent.getStringExtra("distance")
 
-        mapsView.getMapAsync { p0 ->
-            googleMap = p0
+
+        btnRoute.setOnClickListener {
+            startActivity<RouteActivity>(
+                "objLat" to objLat,
+                "objLng" to objLng,
+                "objName" to document.name)
+        }
+
+        images.adapter = AdapterImages(document.images)
+        mapAsync(document)
+    }
+
+    private fun mapAsync(document: Document) {
+        mapsView.getMapAsync { task ->
+            googleMap = task
             val latLng = LatLng(document.location.latitude, document.location.longitude)
             val marker = googleMap.addMarker(MarkerOptions().position(latLng).title(document.name))
             marker.showInfoWindow()
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
             googleMap.uiSettings.isScrollGesturesEnabled = false
         }
+    }
 
+    override fun onPrepareError(exception: Exception) {
+        toast("${exception.message}")
     }
 
     private fun initToolbar() {
@@ -131,7 +140,7 @@ class DetailActivity : BaseMapActivity() {
         addressText = find(R.id.address)
         textDescription = find(R.id.desc_item)
         images = find(R.id.images)
-        lokasiTitle = find(R.id.lokasi_title)
+        titleLocation = find(R.id.lokasi_title)
         mapsView = find(R.id.maps_view)
         btnRoute = find(R.id.route_btn)
 

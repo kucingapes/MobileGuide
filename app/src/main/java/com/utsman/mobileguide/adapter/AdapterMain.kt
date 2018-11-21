@@ -23,12 +23,13 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import com.utsman.mobileguide.DetailActivity
 import com.utsman.mobileguide.R
-import com.utsman.mobileguide.model.MyDocument
+import com.utsman.mobileguide.adapter.viewHolder.Holder
+import com.utsman.mobileguide.model.firestore.Document
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.cardView
 import java.util.*
 
-class AdapterMain(private var list: MutableList<MyDocument>) : RecyclerView.Adapter<MyHolder>() {
+class AdapterMain(private var list: MutableList<Document>) : RecyclerView.Adapter<Holder>() {
 
     private lateinit var context: Context
     private var location: Location? = null
@@ -39,9 +40,9 @@ class AdapterMain(private var list: MutableList<MyDocument>) : RecyclerView.Adap
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         context = parent.context
-        return MyHolder(
+        return Holder(
             RecyclerMainUi().createView(
                 AnkoContext.create(context, parent)
             )
@@ -51,7 +52,7 @@ class AdapterMain(private var list: MutableList<MyDocument>) : RecyclerView.Adap
     override fun getItemCount(): Int = list.size
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: MyHolder, position: Int) {
+    override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = list[position]
 
         val cardContainer = holder.itemView.find(R.id.card_container) as CardView
@@ -83,12 +84,7 @@ class AdapterMain(private var list: MutableList<MyDocument>) : RecyclerView.Adap
         locationName.text = item.name
         Picasso.get().load(item.images[0]).into(locationHeader)
         cardContainer.setOnClickListener {
-           /* context.startActivity<DetailActivity>(
-                "id_document" to item.id,
-                "distance" to distanceKm,
-                "myLat" to myLocation?.latitude,
-                "myLng" to myLocation?.longitude)*/
-            context.startActivity<DetailActivity>("id_document" to item.id)
+            context.startActivity<DetailActivity>("id_document" to item.id, "distance" to distanceKm)
         }
 
     }

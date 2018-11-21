@@ -35,7 +35,7 @@ class DetailUi : AnkoComponent<AppCompatActivity> {
                 fitsSystemWindows = true
                 collapsingToolbarLayout {
                     id = R.id.collapsing_toolbar
-                    setContentScrimResource(android.R.color.white)
+                    setContentScrimResource(R.color.whiteBg)
                     imageView {
                         id = R.id.img_banner
                         scaleType = ImageView.ScaleType.CENTER_CROP

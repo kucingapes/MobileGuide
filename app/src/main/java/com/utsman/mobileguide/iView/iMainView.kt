@@ -7,13 +7,12 @@
 
 package com.utsman.mobileguide.iView
 
-import android.location.Location
-import com.utsman.mobileguide.model.MyDocument
+import com.utsman.mobileguide.model.firestore.Document
 import java.lang.Exception
 
 interface iMainView {
     fun onRefresh()
     fun offRefresh()
-    fun showDataToRecyclerView(list: MutableList<MyDocument>)
+    fun showDataToRecyclerView(list: MutableList<Document>)
     fun onFailure(onFailureListener: Exception)
 }

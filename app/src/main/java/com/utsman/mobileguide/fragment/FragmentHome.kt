@@ -9,9 +9,6 @@ package com.utsman.mobileguide.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
-import android.content.Intent
-import android.content.IntentSender
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -22,16 +19,14 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
 import com.utsman.mobileguide.R
 import com.utsman.mobileguide.adapter.AdapterMain
 import com.utsman.mobileguide.fragment.ui.HomeUi
-import com.utsman.mobileguide.helper.FirestoreHelper
+import com.utsman.mobileguide.helper.MainHelper
 import com.utsman.mobileguide.helper.LocationHelper
 import com.utsman.mobileguide.iView.iLocationView
 import com.utsman.mobileguide.iView.iMainView
-import com.utsman.mobileguide.model.MyDocument
+import com.utsman.mobileguide.model.firestore.Document
 import com.utsman.mobileguide.presenter.LocationPresenter
 import com.utsman.mobileguide.presenter.MainPresenter
 import io.reactivex.disposables.Disposable
@@ -44,7 +39,7 @@ import java.lang.Exception
 @RuntimePermissions
 class FragmentHome : Fragment(), iMainView, iLocationView, AnkoLogger {
 
-    private var list: MutableList<MyDocument> = mutableListOf()
+    private var list: MutableList<Document> = mutableListOf()
 
     private lateinit var presenter: MainPresenter
     private lateinit var locationPresenter: LocationPresenter
@@ -80,7 +75,7 @@ class FragmentHome : Fragment(), iMainView, iLocationView, AnkoLogger {
     @SuppressLint("MissingPermission")
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun callDatabase() {
-        presenter = MainPresenter(this, FirestoreHelper())
+        presenter = MainPresenter(this, MainHelper())
         presenter.requestData()
     }
 
@@ -94,7 +89,7 @@ class FragmentHome : Fragment(), iMainView, iLocationView, AnkoLogger {
         swipeRefresh.isRefreshing = false
     }
 
-    override fun showDataToRecyclerView(list: MutableList<MyDocument>) {
+    override fun showDataToRecyclerView(list: MutableList<Document>) {
         this.list = list
         adapterMain = AdapterMain(this.list)
         adapterMain.notifyDataSetChanged()
@@ -112,9 +107,8 @@ class FragmentHome : Fragment(), iMainView, iLocationView, AnkoLogger {
     }
 
     override fun onFailure(onFailureListener: Exception) {
-        error { "my_error ---> ${onFailureListener.message}" }
+        error { "my_error_home ---> ${onFailureListener.message}" }
     }
-
 
     override fun onRequestLocation(location: Location) {
         adapterMain.myLocation(location)
@@ -127,43 +121,7 @@ class FragmentHome : Fragment(), iMainView, iLocationView, AnkoLogger {
         onRequestPermissionsResult(requestCode, grantResults)
     }
 
-    @SuppressLint("MissingPermission", "CheckResult")
-    private fun requestLocation() {
-        val request = LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setNumUpdates(5)
-            .setInterval(100)
-
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(request)
-        val client = LocationServices.getSettingsClient(requireActivity())
-        val task = client.checkLocationSettings(builder.build())
-
-        task.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException) {
-                try {
-                    exception.startResolutionForResult(
-                        requireActivity(),
-                        2324
-                    )
-                } catch (sendEx: IntentSender.SendIntentException) {
-                }
-            }
-        }
-
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RESULT_OK) {
-            if (resultCode == 2324) {
-                swipeRefresh.isRefreshing = true
-            }
-        }
-
-    }
-
-    private fun sortByDistance(list: MutableList<MyDocument>, location: Location): MutableList<MyDocument> {
+    private fun sortByDistance(list: MutableList<Document>, location: Location): MutableList<Document> {
         list.sortWith(Comparator { model1, model2 ->
             val objLocation1 = Location("")
             objLocation1.latitude = model1.location.latitude

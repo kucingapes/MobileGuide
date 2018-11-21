@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
+import com.androidnetworking.AndroidNetworking
 import com.google.firebase.firestore.FirebaseFirestore
 
 @SuppressLint("Registered")

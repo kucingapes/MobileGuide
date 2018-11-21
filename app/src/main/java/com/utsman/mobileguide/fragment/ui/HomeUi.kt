@@ -36,13 +36,9 @@ class HomeUi<T> : AnkoComponent<T> {
                             textSize = 18f
                         }.lparams(matchParent, wrapContent)
 
-                        textView("Mulai dari yang terdekat") {
-                           // ViewUtils.initText(this, ViewUtils.PLAYFAIR_REGULAR, 14f)
-                        }.lparams(matchParent, wrapContent)
-
                         gravity = Gravity.BOTTOM
                         padding = dip(12)
-                    }.lparams(matchParent, dip(100)) {
+                    }.lparams(matchParent, dip(70)) {
                         collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
                     }
                 }.lparams(matchParent, wrapContent) {

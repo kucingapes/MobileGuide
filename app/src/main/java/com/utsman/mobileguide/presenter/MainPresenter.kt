@@ -8,18 +8,18 @@
 package com.utsman.mobileguide.presenter
 
 import com.utsman.mobileguide.iView.iMainView
-import com.utsman.mobileguide.iNotice.iNoticeMutableList
-import com.utsman.mobileguide.model.MyDocument
+import com.utsman.mobileguide.iNotice.iNoticeMain
+import com.utsman.mobileguide.model.firestore.Document
 import java.lang.Exception
 
-class MainPresenter(private var mainView: iMainView, private var noticeMutableList: iNoticeMutableList)
-    : iMainPresenter, iNoticeMutableList.OnCompleteListener {
+class MainPresenter(private var mainView: iMainView, private var noticeMain: iNoticeMain)
+    : iMainPresenter, iNoticeMain.OnCompleteListener {
 
     override fun requestData() {
-        noticeMutableList.getNoticeMutableList(this)
+        noticeMain.getNoticeMain(this)
     }
 
-    override fun onComplete(list: MutableList<MyDocument>) {
+    override fun onComplete(list: MutableList<Document>) {
         mainView.showDataToRecyclerView(list)
         mainView.offRefresh()
     }

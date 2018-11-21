@@ -1,15 +1,15 @@
 /*
- * MyDocument.ktn MobileGuide
+ * Document.kt on MobileGuide
  * Developed by Muhammad Utsman
- * Last modified 11/20/18 10:24 PM
+ * Last modified 11/21/18 8:51 AM
  * Copyright (c) 2018 kucingapes
  */
 
-package com.utsman.mobileguide.model
+package com.utsman.mobileguide.model.firestore
 
 import com.google.firebase.firestore.GeoPoint
 
-class MyDocument {
+class Document {
     var id: String = ""
     var name: String = ""
     var desc: String = ""

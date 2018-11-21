@@ -1,11 +1,8 @@
 package com.utsman.mobileguide
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Looper
 import android.support.multidex.MultiDex
 import android.widget.FrameLayout
-import com.google.android.gms.location.*
 import com.kucingapes.ankodrawer.AnDrawer
 import com.kucingapes.ankodrawer.AnDrawerClickListener
 import com.kucingapes.ankodrawer.AnDrawerInit
@@ -27,10 +24,10 @@ class MainActivity : BaseActivity(), AnDrawerClickListener {
         val drawer = AnDrawer(this, R.color.colorPrimary)
         contentFrameLayout { anDrawerLayoutWithToolbar(drawer, drawerStatusBarColor = R.color.whiteBg) }
         AnDrawerInit.setupMainView(this, MainUi())
-        AnDrawerInit.customToolbar(this, find(R.id.toolbar))
+        AnDrawerInit.customToolbar(this, find(R.id.toolbar), R.drawable.ic_custom_navigation)
 
         container = find(R.id.fragment_container)
-        addFragment(FragmentHome(), "home")
+        replaceFragment(FragmentHome())
 
     }
 }
