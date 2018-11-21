@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="toolbar" type="id"/>
+    <item name="fragment_container" type="id"/>
+    <item name="collapsing_toolbar" type="id"/>
+    <item name="header_card_item" type="id"/>
+    <item name="name_item" type="id"/>
+    <item name="distance_item" type="id"/>
+    <item name="card_container" type="id"/>
+    <item name="recycler_main" type="id"/>
+    <item name="swipe_refresh" type="id"/>
+    <item name="img_banner" type="id"/>
+    <item name="rating_view" type="id"/>
+    <item name="text_rating" type="id"/>
+    <item name="star_rating" type="id"/>
+    <item name="address" type="id"/>
+    <item name="desc_item" type="id"/>
+    <item name="images" type="id"/>
+    <item name="lokasi_title" type="id"/>
+    <item name="route_btn" type="id"/>
+    <item name="maps_view" type="id"/>
+</resources>
